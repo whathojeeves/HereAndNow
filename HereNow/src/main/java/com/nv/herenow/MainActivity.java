@@ -3,6 +3,9 @@ package com.nv.herenow;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Activity;
@@ -22,6 +25,11 @@ import java.util.List;
 public class MainActivity extends Activity {
 
     private final static String LOGGING_TAG = "NVLOG";
+    private LocationManager locationManager;
+    private String provider;
+
+    public MainActivity() {
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +37,16 @@ public class MainActivity extends Activity {
 
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View v = inflater.inflate(R.layout.activity_main, null);
+
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        Criteria criteria = new Criteria();
+        provider = locationManager.getBestProvider(criteria, false);
+        Location location = locationManager.getLastKnownLocation(provider);
+
+        if (location != null) {
+            System.out.println("Provider " + provider + " has been selected.");
+            Log.i(LOGGING_TAG,"Latitude: "+location.getLatitude()+" Longitude: "+location.getLongitude());
+        }
 
         // Find the ScrollView
         if (v != null) {
@@ -41,7 +59,6 @@ public class MainActivity extends Activity {
             ll = (LinearLayout)v.findViewById(R.id.linear_scrollView);
         }
 
-//        List<RadioButton> buttonList = new ArrayList<RadioButton>();
         RadioGroup rg = new RadioGroup(this); //create the RadioGroup
         rg.setOrientation(RadioGroup.VERTICAL);//or RadioGroup.VERTICAL
 
